@@ -1,0 +1,123 @@
+action = interface +c {
+    do();
+}
+
+error_code = enum {
+    # We have no idea what happened.
+    unknown;
+    # The other side refused our attempt.
+    refused;
+    # Our timeout expired.
+    timeout;
+    # The other side hung up.
+    hangup;
+    # We received corrupt or inconsistent data.
+    corrupt;
+    # We canceled the call.
+    canceled;
+    # The callee or remote end is overloaded.
+    overloaded;
+}
+
+error = record {
+    code: error_code;
+    desc: optional<string>;
+}
+
+# Like action, but exposes a separate method to signal errors, e.g. in
+# connection establishment or starting a thread.
+errorable = interface +c {
+    do();
+
+    # Returns true iff caller should retry the action.
+    error(the_error: error): bool;
+}
+
+duration = record {
+    # Must not be negative.
+    microseconds: i64;
+} deriving (eq, ord)
+
+platform = interface +j +o {
+    # Act at some later time in the caller's thread. If until is 0, act will be
+    # run as soon as possible but not until after the caller has returned (i.e.
+    # defer_action will not block if act blocks.)
+    defer_action(act: action, until: duration);
+
+    # Runs act immediately in a new thread. Calls error() if something went
+    # wrong setting up the thread.
+    thread_action(act: errorable);
+
+    # Run r at the specified interval. Runs as frequently at possible if the
+    # interval is 0 (or is less than the time r takes to complete). Never runs
+    # multiple times concurrently. Interval must be non-negative. If r cancels
+    # the handle in do, r will not be called again.
+    repeat_action(act: action, at_interval: duration): interval_handle;
+
+    # List of Bluetooth devices accessible to the API right now.
+    # On Android, this is all paired devices. On iOS, this is all connected
+    # devices.
+    all_devices(): list<bluetooth_device>;
+
+    # Return a Bluetooth device if one is available at any time before timeout.
+    # Returns a null reference if the timeout expired.
+    wait_for_device_until(timeout: optional<duration>): bluetooth_device;
+
+    # Register a callback to be called any time a Bluetooth device becomes
+    # available.
+    add_device_callback(callback: bluetooth_device_callback):
+        device_callback_handle;
+
+    # Initiate a non-blocking connection to the specified Bluetooth device.
+    connect_to_device(device: bluetooth_device,
+                      callback: bluetooth_connection_callback):
+        bluetooth_connection_handle;
+}
+
+interval_handle = interface +j +o {
+    cancel();
+}
+
+bluetooth_device = interface +j +o {
+    name(): string;
+    address(): string;
+}
+
+bluetooth_device_callback = interface +c {
+    got_device(device: bluetooth_device);
+}
+
+device_callback_handle = interface +j +o {
+    cancel();
+}
+
+# Owned by the native code. Used to signal that we want to write or end the
+# connection.
+bluetooth_connection_handle = interface +j +o {
+    # Signal our intent to write; causes callback's on_write() to be called
+    # once there is space available.
+    request_write();
+
+    # Close the connection. on_close() receives an error_code of canceled.
+    close();
+}
+
+# Owned by the platform code. Provides callbacks on various connection events.
+bluetooth_connection_callback = interface +c {
+    # Called once when the connection has opened successfully.
+    on_open();
+
+    # Called once when the connection ends for any reason. Returns true iff
+    # caller should retry the connection.
+    on_close(error: error): bool;
+
+    # Called every time data is read from the connection. Callee must consume
+    # (or buffer) all bytes.
+    on_read(bytes: binary);
+
+    # Called every time data can be written to the connection. As long as
+    # writes are possible, this is called repeatedly until the return value has
+    # length zero. After a zero-length return, it will not be called again
+    # until request_write() is called on the handle.
+    on_write(): binary;
+}
