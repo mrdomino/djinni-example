@@ -115,9 +115,14 @@ bluetooth_connection_callback = interface +c {
     # (or buffer) all bytes.
     on_read(bytes: binary);
 
-    # Called every time data can be written to the connection. As long as
-    # writes are possible, this is called repeatedly until the return value has
-    # length zero. After a zero-length return, it will not be called again
-    # until request_write() is called on the handle.
-    on_write(): binary;
+    # Called every time data can be written to the connection. Returns a handle
+    # that may be used once. Will be called repeatedly as long as the handle is
+    # used and space is available.
+    can_write(): write_handle;
+}
+
+write_handle = interface +j +o {
+    # Returns number of bytes written. Non-blocking. Never returns a negative
+    # number.
+    write(bytes: binary): i64;
 }

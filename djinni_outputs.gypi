@@ -14,7 +14,8 @@
             "src/gen/cpp/error_code.hpp",
             "src/gen/cpp/errorable.hpp",
             "src/gen/cpp/interval_handle.hpp",
-            "src/gen/cpp/platform.hpp"
+            "src/gen/cpp/platform.hpp",
+            "src/gen/cpp/write_handle.hpp"
         ],
         "djinni_gen_java_files": [
             "src/gen/java/Action.java",
@@ -28,7 +29,8 @@
             "src/gen/java/Errorable.java",
             "src/gen/java/ErrorCode.java",
             "src/gen/java/IntervalHandle.java",
-            "src/gen/java/Platform.java"
+            "src/gen/java/Platform.java",
+            "src/gen/java/WriteHandle.java"
         ],
         "djinni_gen_objc_files": [
             "src/gen/objc/IXEAction.h",
@@ -70,7 +72,10 @@
             "src/gen/objc/IXEIntervalHandleObjcProxy.mm",
             "src/gen/objc/IXEPlatform.h",
             "src/gen/objc/IXEPlatformObjcProxy+Private.h",
-            "src/gen/objc/IXEPlatformObjcProxy.mm"
+            "src/gen/objc/IXEPlatformObjcProxy.mm",
+            "src/gen/objc/IXEWriteHandle.h",
+            "src/gen/objc/IXEWriteHandleObjcProxy+Private.h",
+            "src/gen/objc/IXEWriteHandleObjcProxy.mm"
         ],
         "djinni_gen_jni_files": [
             "src/gen/jni/action.cpp",
@@ -95,7 +100,9 @@
             "src/gen/jni/interval_handle.cpp",
             "src/gen/jni/interval_handle.hpp",
             "src/gen/jni/platform.cpp",
-            "src/gen/jni/platform.hpp"
+            "src/gen/jni/platform.hpp",
+            "src/gen/jni/write_handle.cpp",
+            "src/gen/jni/write_handle.hpp"
         ]
     }
 }
