@@ -79,6 +79,9 @@ muse_device_manager = interface +j +o {
     all_muses(): list<bluetooth_device>;
 
     # Synchronously waits for a Muse until the timeout expires.
+    #
+    # If timeout is none, blocks indefinitely. If timeout is 0, returns
+    # immediately. Return is null if no Muse appeared in time.
     wait_for_muse_until(timeout: optional<duration>): bluetooth_device;
 
     # Adds a callback to be called any time a Muse becomes available.
