@@ -2,6 +2,7 @@
     'includes': [
         'common.gypi',
         'djinni_outputs.gypi',
+        'djinni/support-lib/support_lib.gyp',
     ],
     'targets': [
         {
@@ -16,10 +17,16 @@
                     'sources': [
                         '<@(djinni_gen_jni_files)',
                     ],
+                    'dependencies': [
+                        'djinni_jni',
+                    ],
                 }],
                 ['OS=="ios"', {
                     'sources': [
                         '<@(djinni_gen_objc_files)',
+                    ],
+                    'dependencies': [
+                        'djinni_objc',
                     ],
                 }],
             ],

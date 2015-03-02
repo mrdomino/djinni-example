@@ -1,6 +1,6 @@
 all: ninja
 
-GYPFLAGS = --depth=. --format=ninja-android -DOS=android
+GYPFLAGS = --format=ninja --root-target=platform
 NINJAFLAGS = -v
 
 CORE = .MAKEFILE-VERSION
@@ -12,11 +12,11 @@ bootstrap:
 	ninja -C out/Default
 	rm -rf out
 
-djinni_outputs.gypi: platform.djinni make_djinni_outputs.py gyp/gyp $(CORE)
+djinni_outputs.gypi: platform.djinni make_djinni_outputs.py gyp/gyp
 	$(MAKE) bootstrap
 
-out/Default/build.ninja: build.gyp djinni_outputs.gypi platform.djinni gyp/gyp $(CORE)
-	gyp/gyp $(GYPFLAGS)
+out/Default/build.ninja: build.gyp common.gypi djinni_outputs.gypi platform.djinni gyp/gyp $(CORE)
+	gyp/gyp --depth=. $(GYPFLAGS)
 
 ninja: djinni/src/run out/Default/build.ninja $(CORE)
 	ninja -C out/Default $(NINJAFLAGS)
