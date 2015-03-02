@@ -19,13 +19,13 @@ CJNIEXPORT void JNICALL Java_com_interaxon_example_Errorable_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_com_interaxon_example_Errorable_00024CppProxy_native_1do(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_com_interaxon_example_Errorable_00024CppProxy_native_1ok(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const std::shared_ptr<::interaxon::example::Errorable> & ref = djinni::CppProxyHandle<::interaxon::example::Errorable>::get(nativeRef);
 
-        ref->do();
+        ref->ok();
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

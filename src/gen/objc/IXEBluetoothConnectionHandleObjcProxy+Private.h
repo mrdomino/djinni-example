@@ -16,7 +16,7 @@ namespace dropboxsync
         BluetoothConnectionHandleObjcProxy (id objcRef);
         virtual ~BluetoothConnectionHandleObjcProxy () override;
         static std::shared_ptr<::interaxon::example::BluetoothConnectionHandle> bluetooth_connection_handle_with_objc (id objcRef);
-        virtual void request_write () override;
+        virtual int64_t write (const std::vector<uint8_t> & bytes) override;
         virtual void close () override;
 
         private:

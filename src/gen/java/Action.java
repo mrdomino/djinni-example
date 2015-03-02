@@ -5,6 +5,12 @@ package com.interaxon.example;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * General-purpose callable.
+ *
+ * This would be called 'Runnable' if we didn't mind the name conflict with
+ * java.lang.Runnable.
+ */
 public abstract class Action {
     public abstract void do();
 

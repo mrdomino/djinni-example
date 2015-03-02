@@ -5,6 +5,7 @@
 
 namespace interaxon { namespace example {
 
+/** Handle used to cancel repeated actions. */
 class IntervalHandle {
 public:
     virtual ~IntervalHandle() {}

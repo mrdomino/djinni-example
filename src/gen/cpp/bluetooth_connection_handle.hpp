@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include <cstdint>
+#include <vector>
+
 namespace interaxon { namespace example {
 
 /**
@@ -14,10 +17,11 @@ public:
     virtual ~BluetoothConnectionHandle() {}
 
     /**
-     * Signal our intent to write; causes callback's on_write() to be called
-     * once there is space available.
+     * Write zero or more bytes, returning the number of bytes written. Return
+     * is always non-negative. If this returns 0, wait for can_write() to be
+     * called on the callback.
      */
-    virtual void request_write() = 0;
+    virtual int64_t write(const std::vector<uint8_t> & bytes) = 0;
 
     /** Close the connection. on_close() receives an error_code of canceled. */
     virtual void close() = 0;

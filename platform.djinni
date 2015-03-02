@@ -1,3 +1,7 @@
+# General-purpose callable.
+#
+# This would be called 'Runnable' if we didn't mind the name conflict with
+# java.lang.Runnable.
 action = interface +c {
     do();
 }
@@ -27,25 +31,33 @@ error = record {
 # Like action, but exposes a separate method to signal errors, e.g. in
 # connection establishment or starting a thread.
 errorable = interface +c {
-    do();
+    # Run on success.
+    ok();
 
-    # Returns true iff caller should retry the action.
+    # Run on failure. Returns true iff caller should retry the action.
     error(the_error: error): bool;
 }
 
+# Time representation.
+#
+# Really only serves to prevent the antipattern of postfixing all time-related
+# integral parameters with '_microseconds'.
 duration = record {
     # Must not be negative.
     microseconds: i64;
 } deriving (eq, ord)
 
-platform = interface +j +o {
+action_runner = interface +j +o {
     # Act at some later time in the caller's thread. If until is 0, act will be
     # run as soon as possible but not until after the caller has returned (i.e.
     # defer_action will not block if act blocks.)
     defer_action(act: action, until: duration);
 
-    # Runs act immediately in a new thread. Calls error() if something went
-    # wrong setting up the thread.
+    # Runs act immediately in a new thread.
+    #
+    # Calls error() if something went wrong setting up the thread. Only calls
+    # ok() on a thread different from the one on which it was called. May call
+    # error() from any thread.
     thread_action(act: errorable);
 
     # Run r at the specified interval. Runs as frequently at possible if the
@@ -53,34 +65,25 @@ platform = interface +j +o {
     # multiple times concurrently. Interval must be non-negative. If r cancels
     # the handle in do, r will not be called again.
     repeat_action(act: action, at_interval: duration): interval_handle;
-
-    # List of Bluetooth devices accessible to the API right now.
-    # On Android, this is all paired devices. On iOS, this is all connected
-    # devices.
-    all_devices(): list<bluetooth_device>;
-
-    # Return a Bluetooth device if one is available at any time before timeout.
-    # Returns a null reference if the timeout expired.
-    wait_for_device_until(timeout: optional<duration>): bluetooth_device;
-
-    # Register a callback to be called any time a Bluetooth device becomes
-    # available.
-    add_device_callback(callback: bluetooth_device_callback):
-        device_callback_handle;
-
-    # Initiate a non-blocking connection to the specified Bluetooth device.
-    connect_to_device(device: bluetooth_device,
-                      callback: bluetooth_connection_callback):
-        bluetooth_connection_handle;
 }
 
+# Handle used to cancel repeated actions.
 interval_handle = interface +j +o {
     cancel();
 }
 
-bluetooth_device = interface +j +o {
-    name(): string;
-    address(): string;
+# Provides various different mechanisms for getting a device corresponding to a
+# Muse.
+muse_device_manager = interface +j +o {
+    # Returns all Muses we know about at this moment.
+    all_muses(): list<bluetooth_device>;
+
+    # Synchronously waits for a Muse until the timeout expires.
+    wait_for_muse_until(timeout: optional<duration>): bluetooth_device;
+
+    # Adds a callback to be called any time a Muse becomes available.
+    add_device_callback(callback: bluetooth_device_callback):
+        device_callback_handle;
 }
 
 bluetooth_device_callback = interface +c {
@@ -89,6 +92,17 @@ bluetooth_device_callback = interface +c {
 
 device_callback_handle = interface +j +o {
     cancel();
+}
+
+# Bluetooth device representation.
+#
+# May hold some platform-specific state, e.g. a Bluetooth socket on Android or
+# an EAAccessory on iOS. It is therefore an interface and not a record.
+bluetooth_device = interface +j +o {
+    name(): string;
+    address(): string;
+    connect(callback: bluetooth_connection_callback):
+        bluetooth_connection_handle;
 }
 
 # Owned by the native code. Used to signal that we want to write or end the

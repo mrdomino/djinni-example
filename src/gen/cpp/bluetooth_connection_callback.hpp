@@ -5,12 +5,9 @@
 
 #include "error.hpp"
 #include <cstdint>
-#include <memory>
 #include <vector>
 
 namespace interaxon { namespace example {
-
-class WriteHandle;
 
 /** Owned by the platform code. Provides callbacks on various connection events. */
 class BluetoothConnectionCallback {
@@ -33,11 +30,11 @@ public:
     virtual void on_read(const std::vector<uint8_t> & bytes) = 0;
 
     /**
-     * Called every time data can be written to the connection. Returns a handle
-     * that may be used once. Will be called repeatedly as long as the handle is
-     * used and space is available.
+     * Called every time data can be written to the handle. Will be called
+     * repeatedly as long as write is called on the handle and space is
+     * available.
      */
-    virtual std::shared_ptr<WriteHandle> can_write() = 0;
+    virtual void can_write() = 0;
 };
 
 } }  // namespace interaxon::example

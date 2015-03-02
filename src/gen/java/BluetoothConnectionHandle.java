@@ -9,10 +9,11 @@ package com.interaxon.example;
  */
 public abstract class BluetoothConnectionHandle {
     /**
-     * Signal our intent to write; causes callback's on_write() to be called
-     * once there is space available.
+     * Write zero or more bytes, returning the number of bytes written. Return
+     * is always non-negative. If this returns 0, wait for can_write() to be
+     * called on the callback.
      */
-    public abstract void requestWrite();
+    public abstract long write(byte[] bytes);
 
     /** Close the connection. on_close() receives an error_code of canceled. */
     public abstract void close();

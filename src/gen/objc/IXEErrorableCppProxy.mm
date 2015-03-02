@@ -32,9 +32,9 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     return cache.get(cppRef, [] (const std::shared_ptr<::interaxon::example::Errorable> & p) { return [[IXEErrorableCppProxy alloc] initWithCpp:p]; });
 }
 
-- (void)do {
+- (void)ok {
     try {
-        _cppRef->do();
+        _cppRef->ok();
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

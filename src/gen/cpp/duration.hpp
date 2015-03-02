@@ -8,6 +8,12 @@
 
 namespace interaxon { namespace example {
 
+/**
+ * Time representation.
+ *
+ * Really only serves to prevent the antipattern of postfixing all time-related
+ * integral parameters with '_microseconds'.
+ */
 struct Duration final {
 
     /** Must not be negative. */

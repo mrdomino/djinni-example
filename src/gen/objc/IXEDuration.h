@@ -3,6 +3,12 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * Time representation.
+ *
+ * Really only serves to prevent the antipattern of postfixing all time-related
+ * integral parameters with '_microseconds'.
+ */
 
 @interface IXEDuration : NSObject
 - (id)initWithDuration:(IXEDuration *)duration;

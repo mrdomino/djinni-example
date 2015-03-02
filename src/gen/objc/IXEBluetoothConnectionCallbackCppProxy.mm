@@ -5,7 +5,6 @@
 #import "DJIError.h"
 #import "IXEBluetoothConnectionCallback.h"
 #import "IXEError+Private.h"
-#import "IXEWriteHandleObjcProxy+Private.h"
 #include <exception>
 #include <utility>
 
@@ -56,11 +55,9 @@ static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for th
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 
-- (id <IXEWriteHandle>)canWrite {
+- (void)canWrite {
     try {
-        std::shared_ptr<::interaxon::example::WriteHandle> cppRet = _cppRef->can_write();
-        id <IXEWriteHandle> objcRet = std::static_pointer_cast<::dropboxsync::WriteHandleObjcProxy>(cppRet)->objcRef;
-        return objcRet;
+        _cppRef->can_write();
     } DJINNI_TRANSLATE_EXCEPTIONS()
 }
 

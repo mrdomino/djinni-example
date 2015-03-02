@@ -5,7 +5,6 @@
 #include "HBinary.hpp"
 #include "HBool.hpp"
 #include "error.hpp"
-#include "write_handle.hpp"
 
 namespace djinni_generated {
 
@@ -55,16 +54,14 @@ CJNIEXPORT void JNICALL Java_com_interaxon_example_BluetoothConnectionCallback_0
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_com_interaxon_example_BluetoothConnectionCallback_00024CppProxy_native_1canWrite(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_com_interaxon_example_BluetoothConnectionCallback_00024CppProxy_native_1canWrite(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const std::shared_ptr<::interaxon::example::BluetoothConnectionCallback> & ref = djinni::CppProxyHandle<::interaxon::example::BluetoothConnectionCallback>::get(nativeRef);
 
-        std::shared_ptr<::interaxon::example::WriteHandle> cr = ref->can_write();
-
-        return WriteHandle::toJava(jniEnv, cr);
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter*/)
+        ref->can_write();
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

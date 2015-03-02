@@ -11,9 +11,10 @@
 
 @protocol IXEErrorable
 
-- (void)do;
+/** Run on success. */
+- (void)ok;
 
-/** Returns true iff caller should retry the action. */
+/** Run on failure. Returns true iff caller should retry the action. */
 - (BOOL)error:(IXEError *)theError;
 
 @end

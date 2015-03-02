@@ -10,9 +10,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * connection establishment or starting a thread.
  */
 public abstract class Errorable {
-    public abstract void do();
+    /** Run on success. */
+    public abstract void ok();
 
-    /** Returns true iff caller should retry the action. */
+    /** Run on failure. Returns true iff caller should retry the action. */
     public abstract boolean error(Error theError);
 
     public static final class CppProxy extends Errorable
@@ -39,12 +40,12 @@ public abstract class Errorable {
         }
 
         @Override
-        public void do()
+        public void ok()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            native_do(this.nativeRef);
+            native_ok(this.nativeRef);
         }
-        private native void native_do(long _nativeRef);
+        private native void native_ok(long _nativeRef);
 
         @Override
         public boolean error(Error theError)

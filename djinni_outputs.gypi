@@ -3,6 +3,7 @@
     "variables": {
         "djinni_gen_cpp_files": [
             "src/gen/cpp/action.hpp",
+            "src/gen/cpp/action_runner.hpp",
             "src/gen/cpp/bluetooth_connection_callback.hpp",
             "src/gen/cpp/bluetooth_connection_handle.hpp",
             "src/gen/cpp/bluetooth_device.hpp",
@@ -14,11 +15,13 @@
             "src/gen/cpp/error_code.hpp",
             "src/gen/cpp/errorable.hpp",
             "src/gen/cpp/interval_handle.hpp",
+            "src/gen/cpp/muse_device_manager.hpp",
             "src/gen/cpp/platform.hpp",
             "src/gen/cpp/write_handle.hpp"
         ],
         "djinni_gen_java_files": [
             "src/gen/java/Action.java",
+            "src/gen/java/ActionRunner.java",
             "src/gen/java/BluetoothConnectionCallback.java",
             "src/gen/java/BluetoothConnectionHandle.java",
             "src/gen/java/BluetoothDevice.java",
@@ -29,6 +32,7 @@
             "src/gen/java/Errorable.java",
             "src/gen/java/ErrorCode.java",
             "src/gen/java/IntervalHandle.java",
+            "src/gen/java/MuseDeviceManager.java",
             "src/gen/java/Platform.java",
             "src/gen/java/WriteHandle.java"
         ],
@@ -37,6 +41,9 @@
             "src/gen/objc/IXEActionCppProxy+Private.h",
             "src/gen/objc/IXEActionCppProxy.h",
             "src/gen/objc/IXEActionCppProxy.mm",
+            "src/gen/objc/IXEActionRunner.h",
+            "src/gen/objc/IXEActionRunnerObjcProxy+Private.h",
+            "src/gen/objc/IXEActionRunnerObjcProxy.mm",
             "src/gen/objc/IXEBluetoothConnectionCallback.h",
             "src/gen/objc/IXEBluetoothConnectionCallbackCppProxy+Private.h",
             "src/gen/objc/IXEBluetoothConnectionCallbackCppProxy.h",
@@ -70,6 +77,9 @@
             "src/gen/objc/IXEIntervalHandle.h",
             "src/gen/objc/IXEIntervalHandleObjcProxy+Private.h",
             "src/gen/objc/IXEIntervalHandleObjcProxy.mm",
+            "src/gen/objc/IXEMuseDeviceManager.h",
+            "src/gen/objc/IXEMuseDeviceManagerObjcProxy+Private.h",
+            "src/gen/objc/IXEMuseDeviceManagerObjcProxy.mm",
             "src/gen/objc/IXEPlatform.h",
             "src/gen/objc/IXEPlatformObjcProxy+Private.h",
             "src/gen/objc/IXEPlatformObjcProxy.mm",
@@ -80,6 +90,8 @@
         "djinni_gen_jni_files": [
             "src/gen/jni/action.cpp",
             "src/gen/jni/action.hpp",
+            "src/gen/jni/action_runner.cpp",
+            "src/gen/jni/action_runner.hpp",
             "src/gen/jni/bluetooth_connection_callback.cpp",
             "src/gen/jni/bluetooth_connection_callback.hpp",
             "src/gen/jni/bluetooth_connection_handle.cpp",
@@ -99,6 +111,8 @@
             "src/gen/jni/errorable.hpp",
             "src/gen/jni/interval_handle.cpp",
             "src/gen/jni/interval_handle.hpp",
+            "src/gen/jni/muse_device_manager.cpp",
+            "src/gen/jni/muse_device_manager.hpp",
             "src/gen/jni/platform.cpp",
             "src/gen/jni/platform.hpp",
             "src/gen/jni/write_handle.cpp",

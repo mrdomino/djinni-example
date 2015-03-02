@@ -3,6 +3,7 @@
 
 package com.interaxon.example;
 
+/** Handle used to cancel repeated actions. */
 public abstract class IntervalHandle {
     public abstract void cancel();
 }

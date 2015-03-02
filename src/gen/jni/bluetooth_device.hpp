@@ -19,12 +19,14 @@ public:
     const djinni::GlobalRef<jclass> clazz { djinni::jniFindClass("com/interaxon/example/BluetoothDevice") };
     const jmethodID method_name { djinni::jniGetMethodID(clazz.get(), "name", "()Ljava/lang/String;") };
     const jmethodID method_address { djinni::jniGetMethodID(clazz.get(), "address", "()Ljava/lang/String;") };
+    const jmethodID method_connect { djinni::jniGetMethodID(clazz.get(), "connect", "(Lcom/interaxon/example/BluetoothConnectionCallback;)Lcom/interaxon/example/BluetoothConnectionHandle;") };
 
     class JavaProxy final : djinni::JavaProxyCacheEntry, public ::interaxon::example::BluetoothDevice {
     public:
         JavaProxy(jobject obj);
         virtual std::string name() override;
         virtual std::string address() override;
+        virtual std::shared_ptr<::interaxon::example::BluetoothConnectionHandle> connect(const std::shared_ptr<::interaxon::example::BluetoothConnectionCallback> & callback) override;
 
     private:
         using djinni::JavaProxyCacheEntry::getGlobalRef;

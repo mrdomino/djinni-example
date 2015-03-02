@@ -5,6 +5,12 @@
 
 namespace interaxon { namespace example {
 
+/**
+ * General-purpose callable.
+ *
+ * This would be called 'Runnable' if we didn't mind the name conflict with
+ * java.lang.Runnable.
+ */
 class Action {
 public:
     virtual ~Action() {}

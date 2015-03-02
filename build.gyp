@@ -1,8 +1,29 @@
 {
     'includes': [
+        'common.gypi',
         'djinni_outputs.gypi',
     ],
     'targets': [
+        {
+            'target_name': 'platform',
+            'type': 'static_library',
+            'toolsets': ['host', 'target'],
+            'sources': [
+                '<@(djinni_gen_cpp_files)',
+            ],
+            'conditions': [
+                ['OS=="android"', {
+                    'sources': [
+                        '<@(djinni_gen_jni_files)',
+                    ],
+                }],
+                ['OS=="ios"', {
+                    'sources': [
+                        '<@(djinni_gen_objc_files)',
+                    ],
+                }],
+            ],
+        },
         {
             'target_name': 'bootstrap',
             'type': 'none',
@@ -17,7 +38,7 @@
                 'make_djinni_outputs.py',
             ],
             'dependencies': [
-                'run_djinni'
+                'djinni_interfaces'
             ],
             'actions': [
                 {
@@ -32,10 +53,13 @@
             ],
         },
         {
-            'target_name': 'run_djinni',
+            'target_name': 'djinni_interfaces',
             'type': 'none',
             'sources': [
-                'platform.djinni',
+                '<@(djinni_gen_cpp_files)',
+                '<@(djinni_gen_jni_files)',
+                '<@(djinni_gen_java_files)',
+                '<@(djinni_gen_objc_files)',
             ],
             'actions': [
                 {

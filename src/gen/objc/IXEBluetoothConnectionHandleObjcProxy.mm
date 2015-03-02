@@ -24,10 +24,13 @@ namespace dropboxsync
         return static_cast<std::shared_ptr<::interaxon::example::BluetoothConnectionHandle>>(cache.get(objcRef));
     }
 
-    void BluetoothConnectionHandleObjcProxy::request_write ()
+    int64_t BluetoothConnectionHandleObjcProxy::write (const std::vector<uint8_t> & bytes)
     {
         @autoreleasepool {
-            [objcRef requestWrite];
+            NSData *cpp_bytes = [NSData dataWithBytes:(&bytes[0]) length:(bytes.size())];
+            int64_t objcRet = [objcRef write:cpp_bytes];
+            int64_t cppRet = objcRet;
+            return cppRet;
         }
     }
 

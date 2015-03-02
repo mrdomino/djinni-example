@@ -15,9 +15,10 @@ class Errorable {
 public:
     virtual ~Errorable() {}
 
-    virtual void do() = 0;
+    /** Run on success. */
+    virtual void ok() = 0;
 
-    /** Returns true iff caller should retry the action. */
+    /** Run on failure. Returns true iff caller should retry the action. */
     virtual bool error(const Error & the_error) = 0;
 };
 

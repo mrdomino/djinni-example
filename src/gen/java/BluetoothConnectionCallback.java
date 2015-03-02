@@ -23,11 +23,11 @@ public abstract class BluetoothConnectionCallback {
     public abstract void onRead(byte[] bytes);
 
     /**
-     * Called every time data can be written to the connection. Returns a handle
-     * that may be used once. Will be called repeatedly as long as the handle is
-     * used and space is available.
+     * Called every time data can be written to the handle. Will be called
+     * repeatedly as long as write is called on the handle and space is
+     * available.
      */
-    public abstract WriteHandle canWrite();
+    public abstract void canWrite();
 
     public static final class CppProxy extends BluetoothConnectionCallback
     {
@@ -77,11 +77,11 @@ public abstract class BluetoothConnectionCallback {
         private native void native_onRead(long _nativeRef, byte[] bytes);
 
         @Override
-        public WriteHandle canWrite()
+        public void canWrite()
         {
             assert !this.destroyed.get() : "trying to use a destroyed object";
-            return native_canWrite(this.nativeRef);
+            native_canWrite(this.nativeRef);
         }
-        private native WriteHandle native_canWrite(long _nativeRef);
+        private native void native_canWrite(long _nativeRef);
     }
 }

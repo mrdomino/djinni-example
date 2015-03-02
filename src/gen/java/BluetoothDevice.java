@@ -3,8 +3,16 @@
 
 package com.interaxon.example;
 
+/**
+ * Bluetooth device representation.
+ *
+ * May hold some platform-specific state, e.g. a Bluetooth socket on Android or
+ * an EAAccessory on iOS. It is therefore an interface and not a record.
+ */
 public abstract class BluetoothDevice {
     public abstract String name();
 
     public abstract String address();
+
+    public abstract BluetoothConnectionHandle connect(BluetoothConnectionCallback callback);
 }

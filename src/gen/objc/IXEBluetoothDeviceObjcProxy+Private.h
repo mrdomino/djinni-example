@@ -18,6 +18,7 @@ namespace dropboxsync
         static std::shared_ptr<::interaxon::example::BluetoothDevice> bluetooth_device_with_objc (id objcRef);
         virtual std::string name () override;
         virtual std::string address () override;
+        virtual std::shared_ptr<BluetoothConnectionHandle> connect (const std::shared_ptr<::interaxon::example::BluetoothConnectionCallback> & callback) override;
 
         private:
         BluetoothDeviceObjcProxy () {};

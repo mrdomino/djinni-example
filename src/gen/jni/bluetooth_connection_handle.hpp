@@ -17,13 +17,13 @@ public:
     static std::shared_ptr<::interaxon::example::BluetoothConnectionHandle> fromJava(JNIEnv* jniEnv, jobject j) { return djinni::JniClass<::djinni_generated::BluetoothConnectionHandle>::get()._fromJava(jniEnv, j); }
 
     const djinni::GlobalRef<jclass> clazz { djinni::jniFindClass("com/interaxon/example/BluetoothConnectionHandle") };
-    const jmethodID method_requestWrite { djinni::jniGetMethodID(clazz.get(), "requestWrite", "()V") };
+    const jmethodID method_write { djinni::jniGetMethodID(clazz.get(), "write", "([B)J") };
     const jmethodID method_close { djinni::jniGetMethodID(clazz.get(), "close", "()V") };
 
     class JavaProxy final : djinni::JavaProxyCacheEntry, public ::interaxon::example::BluetoothConnectionHandle {
     public:
         JavaProxy(jobject obj);
-        virtual void request_write() override;
+        virtual int64_t write(const std::vector<uint8_t> & bytes) override;
         virtual void close() override;
 
     private:
