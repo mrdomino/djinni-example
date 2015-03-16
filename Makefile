@@ -21,6 +21,7 @@ $(STAGE1): $(STAGE1_DEPS)
 	touch $@
 djinni_outputs.gypi: $(STAGE1)
 	rm -rf out src/gen
+	cp -f djinni_outputs.gypi{.bootstrap,}
 	$(GYP) --depth=. -fninja -Rbootstrap
 	ninja -C out/Default
 	rm -rf out
