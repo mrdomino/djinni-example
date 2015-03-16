@@ -20,7 +20,7 @@ STAGE1_DEPS=build.gyp common.gypi $(DJINNI_RUN) $(DJINNI_START) $(GYP) \
 $(STAGE1): $(STAGE1_DEPS)
 	touch $@
 djinni_outputs.gypi: $(STAGE1)
-	rm -rf out
+	rm -rf out src/gen
 	$(GYP) --depth=. -fninja -Rbootstrap
 	ninja -C out/Default
 	rm -rf out
