@@ -46,7 +46,8 @@ action_runner = interface +j +o {
     # Runs the action on the main thread at the requested interval. If the
     # interval is zero or shorter than the amount of time the action takes to
     # complete, the action is run as often as possible. If ok() returns false,
-    # the interval is canceled.
+    # the interval is canceled. The interval is always relative to the start of
+    # the last action.
     on_main_thread_repeat_action(act: action, at_interval: duration);
 
     # Runs the action in its own thread. Handy for blocking calls. The ok()
