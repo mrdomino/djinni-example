@@ -1,30 +1,42 @@
+# Bootstrapping makefile. Generates all prerequisites for gyp + ninja to run.
 all: ninja
 
-GYPFLAGS = --format=ninja --root-target=platform
 NINJAFLAGS = -v
 
-CORE = .MAKEFILE-VERSION
-$(CORE): Makefile
-	touch $@
+DJINNI_START=djinni/src/target/start
+DJINNI_RUN=djinni/src/run
+GYP=gyp/gyp
 
-bootstrap:
-	gyp/gyp --depth=. --format=ninja --root-target=bootstrap
+
+$(DJINNI_RUN) $(GYP):
+	git submodule update --init --recursive
+
+$(DJINNI_START): $(DJINNI_RUN)
+	djinni/src/build
+
+STAGE1=.STAGE1
+STAGE1_DEPS=build.gyp common.gypi $(DJINNI_RUN) $(DJINNI_START) $(GYP) \
+            Makefile platform.djinni
+$(STAGE1): $(STAGE1_DEPS)
+	touch $@
+djinni_outputs.gypi: $(STAGE1)
+	rm -rf out
+	$(GYP) --depth=. -fninja -Rbootstrap
 	ninja -C out/Default
 	rm -rf out
 
-djinni_outputs.gypi: platform.djinni make_djinni_outputs.py gyp/gyp
-	$(MAKE) bootstrap
+STAGE2=.STAGE2
+STAGE2_DEPS=$(STAGE1) djinni_outputs.gypi
+$(STAGE2): $(STAGE2_DEPS)
+	touch $@
+out/Default/build.ninja: $(STAGE2)
+	$(GYP) --depth=. -fninja
 
-out/Default/build.ninja: build.gyp common.gypi djinni_outputs.gypi platform.djinni gyp/gyp $(CORE)
-	gyp/gyp --depth=. $(GYPFLAGS)
 
-ninja: djinni/src/run out/Default/build.ninja $(CORE)
+ninja: out/Default/build.ninja
 	ninja -C out/Default $(NINJAFLAGS)
-
-gyp/gyp djinni/src/run:
-	git submodule update --init --recursive
 
 clean:
 	rm -rf out
 
-.PHONY: all bootstrap ninja
+.PHONY: all clean ninja

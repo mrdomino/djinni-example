@@ -1,11 +1,3 @@
-# General-purpose callable.
-#
-# This would be called 'Runnable' if we didn't mind the name conflict with
-# java.lang.Runnable.
-action = interface +c {
-    do();
-}
-
 error_code = enum {
     # We have no idea what happened.
     unknown;
@@ -28,13 +20,16 @@ error = record {
     desc: optional<string>;
 }
 
-# Like action, but exposes a separate method to signal errors, e.g. in
-# connection establishment or starting a thread.
-errorable = interface +c {
-    # Run on success.
-    ok();
+# General-purpose callable action.
+action = interface +c {
+    # Run the action. Returns true iff the caller should rerun this action. (A
+    # false return cancels an interval action, for instance.)
+    ok(): bool;
 
-    # Run on failure. Returns true iff caller should retry the action.
+    # Notify the action that an error occurred setting up its environment.
+    # Called e.g. if we requested that this action be run on its own thread and
+    # the thread creation failed. Returns true iff the caller should retry this
+    # action.
     error(the_error: error): bool;
 }
 
@@ -48,49 +43,30 @@ duration = record {
 } deriving (eq, ord)
 
 action_runner = interface +j +o {
-    # Act at some later time in the caller's thread. If until is 0, act will be
-    # run as soon as possible but not until after the caller has returned (i.e.
-    # defer_action will not block if act blocks.)
-    defer_action(act: action, until: duration);
+    # Runs the action on the main thread at the requested interval. If the
+    # interval is zero or shorter than the amount of time the action takes to
+    # complete, the action is run as often as possible. If ok() returns false,
+    # the interval is canceled.
+    on_main_thread_repeat_action(act: action, at_interval: duration);
 
-    # Runs act immediately in a new thread.
-    #
-    # Calls error() if something went wrong setting up the thread. Only calls
-    # ok() on a thread different from the one on which it was called. May call
-    # error() from any thread.
-    thread_action(act: errorable);
-
-    # Run r at the specified interval. Runs as frequently at possible if the
-    # interval is 0 (or is less than the time r takes to complete). Never runs
-    # multiple times concurrently. Interval must be non-negative. If r cancels
-    # the handle in do, r will not be called again.
-    repeat_action(act: action, at_interval: duration): interval_handle;
-}
-
-# Handle used to cancel repeated actions.
-interval_handle = interface +j +o {
-    cancel();
+    # Runs the action in its own thread. Handy for blocking calls. The ok()
+    # method is called in a synchronous loop until it returns false.
+    on_new_thread_do_action(act: action);
 }
 
 # Provides various different mechanisms for getting a device corresponding to a
 # Muse.
-muse_device_manager = interface +j +o {
-    # Returns all Muses we know about at this moment.
-    all_muses(): list<bluetooth_device>;
+bluetooth_device_manager = interface +j +o {
+    # Returns all devices we know about at this moment.
+    all_devices(): list<bluetooth_device>;
 
-    # Synchronously waits for a Muse until the timeout expires.
-    #
-    # If timeout is none, blocks indefinitely. If timeout is 0, returns
-    # immediately. Return is null if no Muse appeared in time.
-    wait_for_muse_until(timeout: optional<duration>): bluetooth_device;
-
-    # Adds a callback to be called any time a Muse becomes available.
+    # Adds a callback to be called any time a device becomes available.
     add_device_callback(callback: bluetooth_device_callback):
         device_callback_handle;
 }
 
 bluetooth_device_callback = interface +c {
-    got_device(device: bluetooth_device);
+    on_new_device(device: bluetooth_device);
 }
 
 device_callback_handle = interface +j +o {
@@ -107,10 +83,8 @@ bluetooth_device = interface +j +o {
 # Owned by the native code. Used to signal that we want to write or end the
 # connection.
 bluetooth_connection_handle = interface +j +o {
-    # Write zero or more bytes, returning the number of bytes written. Return
-    # is always non-negative. If this returns 0, wait for can_write() to be
-    # called on the callback.
-    write(bytes: binary): i64;
+    # Write some bytes, or buffer them for later writing.
+    write(bytes: binary);
 
     # Close the connection. on_close() receives an error_code of canceled.
     close();
@@ -123,14 +97,9 @@ bluetooth_connection_callback = interface +c {
 
     # Called once when the connection ends for any reason. Returns true iff
     # caller should retry the connection.
-    on_close(error: error): bool;
+    on_done(error: error): bool;
 
     # Called every time data is read from the connection. Callee must consume
     # (or buffer) all bytes.
     on_read(bytes: binary);
-
-    # Called every time data can be written to the handle. Will be called
-    # repeatedly as long as write is called on the handle and space is
-    # available.
-    can_write();
 }
